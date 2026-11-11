@@ -1,0 +1,36 @@
+
+name: Build CODM LEVEL UP APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Extract project
+        run: |
+          mkdir android-project
+          unzip -q CODM_LEVEL_UP-1.zip -d android-project
+
+      - name: Build APK
+        run: |
+          cd android-project
+          gradle assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CODM-LEVEL-UP-APK
+          path: android-project/app/build/outputs/apk/debug/app-debug.apk
